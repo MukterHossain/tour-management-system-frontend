@@ -1,18 +1,10 @@
-import Logo from "@/assets/icons/Logo"
-import { Button } from "@/components/ui/button"
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-} from "@/components/ui/navigation-menu"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 
-// Navigation links array to be used in both desktop and mobile menus
+import { Button } from "@/components/ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
+import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "./ui/navigation-menu"
+import Logo from "@/assets/icons/Logo"
+
+
 const navigationLinks = [
   { href: "#", label: "Home", active: true },
   { href: "#", label: "Features" },
@@ -20,7 +12,7 @@ const navigationLinks = [
   { href: "#", label: "About" },
 ]
 
-export default function Navbar() {
+export default function Component() {
   return (
     <header className="border-b px-4 md:px-6">
       <div className="flex h-16 items-center justify-between gap-4">
