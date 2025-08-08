@@ -6,8 +6,8 @@ import { router } from './routes/index.tsx'
 import  { ThemeProvider } from './providers/themeProvider.tsx'
 import {Provider as ReduxProvider} from "react-redux"
 import { store } from './redux/store.ts'
-import { Toaster } from 'sonner'
-// import { Toaster } from './components/ui/sonner.tsx'
+import { Toaster } from './components/ui/sonner.tsx'
+
 
 
 createRoot(document.getElementById('root')!).render(
