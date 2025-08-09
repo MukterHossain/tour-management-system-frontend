@@ -29,6 +29,9 @@ export function LoginForm({
       }
     } catch (err) {
       console.log(err)
+      if(err.data.message === "Password does not match"){
+        toast.error("Invalid credential")
+      }
       if (err.data.message === "User is not verified" ){
         toast.error("Your account is not verified yet")
         navigate("/verify", { state: data.email })
