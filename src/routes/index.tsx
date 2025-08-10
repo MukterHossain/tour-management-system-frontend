@@ -1,10 +1,6 @@
 import App from "@/App";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import About from "@/pages/About";
-import AddTour from "@/pages/Admin/AddTour";
-import AddTourType from "@/pages/Admin/AddTourType";
-import Analytics from "@/pages/Admin/Analytics";
-
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Bookings from "@/pages/User/Bookings";
