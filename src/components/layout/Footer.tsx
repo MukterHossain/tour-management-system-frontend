@@ -5,7 +5,7 @@ export default function Footer() {
 
   return (
      <footer className="border-t">
-      <div className="mx-auto container space-y-8 px-4 py-16 lg:space-y-16">
+      <div className=" space-y-4 px-4 py-16 lg:space-y-10">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div>
             <div className="flex items-center gap-3">
@@ -150,46 +150,6 @@ export default function Footer() {
                     1on1 Coaching{" "}
                   </a>
                 </li>
-
-                <li>
-                  <a
-                    href="#"
-                    className="text-foreground/90 transition hover:text-foreground/60"
-                  >
-                    {" "}
-                    Company Review{" "}
-                  </a>
-                </li>
-
-                <li>
-                  <a
-                    href="#"
-                    className="text-foreground/90 transition hover:text-foreground/60"
-                  >
-                    {" "}
-                    Accounts Review{" "}
-                  </a>
-                </li>
-
-                <li>
-                  <a
-                    href="#"
-                    className="text-foreground/90 transition hover:text-foreground/60"
-                  >
-                    {" "}
-                    HR Consulting{" "}
-                  </a>
-                </li>
-
-                <li>
-                  <a
-                    href="#"
-                    className="text-foreground/90 transition hover:text-foreground/60"
-                  >
-                    {" "}
-                    SEO Optimisation{" "}
-                  </a>
-                </li>
               </ul>
             </div>
 
@@ -214,16 +174,6 @@ export default function Footer() {
                   >
                     {" "}
                     Meet the Team{" "}
-                  </a>
-                </li>
-
-                <li>
-                  <a
-                    href="#"
-                    className="text-foreground/90 transition hover:text-foreground/60"
-                  >
-                    {" "}
-                    Accounts Review{" "}
                   </a>
                 </li>
               </ul>
@@ -252,16 +202,6 @@ export default function Footer() {
                     FAQs{" "}
                   </a>
                 </li>
-
-                <li>
-                  <a
-                    href="#"
-                    className="text-foreground/90 transition hover:text-foreground/60"
-                  >
-                    {" "}
-                    Live Chat{" "}
-                  </a>
-                </li>
               </ul>
             </div>
 
@@ -286,25 +226,6 @@ export default function Footer() {
                   >
                     {" "}
                     Returns Policy{" "}
-                  </a>
-                </li>
-
-                <li>
-                  <a
-                    href="#"
-                    className="text-foreground/90 transition hover:text-foreground/60"
-                  >
-                    {" "}
-                    Refund Policy{" "}
-                  </a>
-                </li>
-
-                <li>
-                  <a
-                    href="#"
-                    className="text-foreground/90 transition hover:text-foreground/60"
-                  >
-                    Hiring-3 Statistics
                   </a>
                 </li>
               </ul>
