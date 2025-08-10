@@ -1,9 +1,11 @@
 import { Outlet } from "react-router"
 import CommonLayout from "./components/layout/CommonLayout"
+import { generateRoutes } from "./utils/generateRoutes"
+import { adminSideBarItems } from "./routes/adminSideBarItems"
 
 
 function App() {
-  // const [count, setCount] = useState(0)
+  console.log(generateRoutes(adminSideBarItems))
 
   return (
     <CommonLayout> 
