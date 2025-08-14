@@ -1,3 +1,4 @@
+import SingleImageUploader from "@/components/SingleImageUploader";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,29 +19,46 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useAddDivisionMutation } from "@/redux/features/division/division.api";
+import { useState } from "react";
 // import { useAddTourTypeMutation } from "@/redux/features/Tour/tour.api";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 // import { toast } from "sonner";
 
 export function AddDivisionModal() {
+  const [open, setOpen] = useState(false)
+  const [image, setImage] = useState<File | null>(null)
+  const [addDivision] = useAddDivisionMutation()
+  console.log("Inside add division modal", image);
+
   const form = useForm({
     defaultValues: {
         name: "",
         description: "",
     }
   });
-//   const [addTourType] = useAddTourTypeMutation();
+ 
+
 
   const onSubmit = async (data) => {
     console.log(data)
-    // const res = await addTourType({ name: data.name }).unwrap();
-    // if (res.success) {
-    //   toast.success("Tour Type Added");
-    // }
+    const formData = new FormData()
+
+    formData.append("data", JSON.stringify(data))
+    formData.append("file", image as File)
+    
+     try {
+      const res = await addDivision(formData).unwrap();
+      toast.success("Division Added");
+      setOpen(false);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button>Add Division</Button>
         </DialogTrigger>
@@ -81,13 +99,14 @@ export function AddDivisionModal() {
                 )}
               />
             </form>
+            <SingleImageUploader onChange={setImage}></SingleImageUploader>
           </Form>
 
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit" form="add-division">
+            <Button disabled={!image} type="submit" form="add-division">
               Save changes
             </Button>
           </DialogFooter>
