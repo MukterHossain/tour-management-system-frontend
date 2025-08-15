@@ -11,45 +11,46 @@ import type { FileMetadata } from "@/hooks/use-file-upload";
 import { cn } from "@/lib/utils";
 import { useGetDivisionQuery } from "@/redux/features/division/division.api";
 import { useAddTourMutation, useGetTourTypesQuery } from "@/redux/features/Tour/tour.api";
+import type { IErrorResponse } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format, formatISO } from "date-fns";
 import { CalendarIcon, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 
-// const formSchema = z.object({
-//   title: z.string().min(1, "Title is required"),
-//   description: z.string().min(1, "Description is required"),
-//   location: z.string().min(1, "Location is required"),
-//   costFrom: z.string().min(1, "Cost is required"),
-//   startDate: z.date({ message: "Start date is required" }),
-//   endDate: z.date({ message: "End date is required" }),
-//   departureLocation: z.string().min(1, "Departure location is required"),
-//   arrivalLocation: z.string().min(1, "Arrival location is required"),
-//   included: z.array(z.object({ value: z.string() })),
-//   excluded: z.array(z.object({ value: z.string() })),
-//   amenities: z.array(z.object({ value: z.string() })),
-//   tourPlan: z.array(z.object({ value: z.string() })),
-//   maxGuest: z.string().min(1, "Max guest is required"),
-//   minAge: z.string().min(1, "Minimum age is required"),
-//   division: z.string().min(1, "Division is required"),
-//   tourType: z.string().min(1, "Tour type is required"),
-// });
+const formSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  location: z.string().min(1, "Location is required"),
+  costFrom: z.string().min(1, "Cost is required"),
+  startDate: z.date({ message: "Start date is required" }),
+  endDate: z.date({ message: "End date is required" }),
+  departureLocation: z.string().min(1, "Departure location is required"),
+  arrivalLocation: z.string().min(1, "Arrival location is required"),
+  included: z.array(z.object({ value: z.string() })),
+  excluded: z.array(z.object({ value: z.string() })),
+  amenities: z.array(z.object({ value: z.string() })),
+  tourPlan: z.array(z.object({ value: z.string() })),
+  maxGuest: z.string().min(1, "Max guest is required"),
+  minAge: z.string().min(1, "Minimum age is required"),
+  division: z.string().min(1, "Division is required"),
+  tourType: z.string().min(1, "Tour type is required"),
+});
 export default function AddTour() {
   const { data: divisionData, isLoading: divisionLoading } = useGetDivisionQuery(undefined)
   const [images, setImages] = useState<(File | FileMetadata)[] | []>([])
   const { data: tourTypeData } = useGetTourTypesQuery(undefined)
   const [addTour] = useAddTourMutation();
-console.log("image", images);
+  // console.log("image", images);
 
   const divisionOptions = divisionData?.map((item: { _id: string; name: string }) => ({
     value: item._id,
     label: item.name
   })
   )
-  console.log("divisionOptions", divisionOptions)
+  // console.log("divisionOptions", divisionOptions)
   const tourTypeOptions = tourTypeData?.map((tourType: { _id: string; name: string }) => ({
     value: tourType._id,
     label: tourType.name
@@ -61,30 +62,84 @@ console.log("image", images);
 
 
 
-  //<z.infer<typeof formSchema>>
-  const form = useForm({
-    // resolver: zodResolver(formSchema),
+  //
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      location: "",
-      costFrom: "",
+      title: "Cox's Bazar Beach Adventure",
+      description:
+        "Experience the world's longest natural sea beach with golden sandy shores, crystal clear waters, and breathtaking sunsets.",
+      location: "Cox's Bazar",
+      costFrom: "1000",
       startDate: new Date(),
-      endDate: new Date(),
-      departureLocation: "",
-      arrivalLocation: "",
-      included: [],
-      excluded: [],
-      amenities: [],
-      tourPlan: [],
-      maxGuest: "",
-      minAge: "",
+      endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days later
+      departureLocation: "Dhaka",
+      arrivalLocation: "Cox's Bazar",
+      included: [
+        { value: "Accommodation for 2 nights" },
+        { value: "All meals (breakfast, lunch, dinner)" },
+      ],
+      excluded: [
+        { value: "Personal expenses" },
+        { value: "Extra activities not mentioned" },
+      ],
+      amenities: [
+        { value: "Air-conditioned rooms" },
+        { value: "Free WiFi" },
+      ],
+      tourPlan: [
+        { value: "Day 1: Arrival and beach exploration" },
+        { value: "Day 2: Himchari National Park visit" },
+      ],
+      maxGuest: "25",
+      minAge: "5",
       division: "",
       tourType: "",
     }
   })
-  const handleSubmit = async (data) => {
+
+
+  const {
+    fields: includedFields,
+    append: appendIncluded,
+    remove: removeIncluded
+  } = useFieldArray({
+    control: form.control,
+    name: "included"
+  })
+  const {
+    fields: excludedFields,
+    append: appendExcluded,
+    remove: removeExcluded,
+  } = useFieldArray({
+    control: form.control,
+    name: "excluded",
+  });
+
+  const {
+    fields: amenitiesFields,
+    append: appendAmenities,
+    remove: removeAmenities,
+  } = useFieldArray({
+    control: form.control,
+    name: "amenities",
+  });
+
+  const {
+    fields: tourPlanFields,
+    append: appendTourPlan,
+    remove: removeTourPlan,
+  } = useFieldArray({
+    control: form.control,
+    name: "tourPlan",
+  });
+  console.log("includedFields", includedFields)
+
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     const toastId = toast.loading("Creating tour....");
+    if (images.length === 0) {
+      toast.error("At least one image is required", { id: toastId })
+    }
     const tourData = {
       ...data,
       costFrom: Number(data.costFrom),
@@ -92,32 +147,41 @@ console.log("image", images);
       maxGuest: Number(data.maxGuest),
       startDate: formatISO(data.startDate),
       endDate: formatISO(data.endDate),
+      included:
+        data.included[0].value === ""
+          ? []
+          : data.included.map((item: { value: string }) => item.value),
+      excluded:
+        data.included[0].value === ""
+          ? []
+          : data.excluded.map((item: { value: string }) => item.value),
+      amenities:
+        data.amenities[0].value === ""
+          ? []
+          : data.amenities.map((item: { value: string }) => item.value),
+      tourPlan:
+        data.tourPlan[0].value === ""
+          ? []
+          : data.tourPlan.map((item: { value: string }) => item.value),
     }
 
     const formData = new FormData();
     formData.append("data", JSON.stringify(tourData));
     images.forEach((image) => formData.append("files", image as File));
-    const res = await addTour(formData).unwrap();
 
-      if (res.success) {
-        toast.success("Tour created", { id: toastId });
-        form.reset();
-      } else {
-        toast.error("Something went wrong", { id: toastId });
-      }
     try {
       const res = await addTour(formData).unwrap();
 
       if (res.success) {
-        toast.success("Tour created", { id: toastId });
+        toast.success("Tour created successfully", { id: toastId });
         form.reset();
       } else {
         toast.error("Something went wrong", { id: toastId });
       }
 
     } catch (err) {
-        console.error(err)
-        toast.error("Something went wrong", { id: toastId });
+      console.error(err)
+      toast.error((err as IErrorResponse).message || "Something went wrong", { id: toastId });
     }
 
 
@@ -394,25 +458,25 @@ console.log("image", images);
                 />
                 <div className="flex-1 mt-5">
                   {/*  */}
-                  <MultipleImageUploader onChange={setImages}/>
+                  <MultipleImageUploader onChange={setImages} />
                 </div>
               </div>
               <div className="border-t border-muted w-full "></div>
               <div>
                 <div className="flex justify-between">
                   <p className="font-semibold">Included</p>
-                  {/* <Button
+                  <Button
                     type="button"
                     variant="outline"
                     size="icon"
                     onClick={() => appendIncluded({ value: "" })}
                   >
                     <Plus />
-                  </Button> */}
+                  </Button>
                 </div>
 
                 <div className="space-y-4 mt-4">
-                  {/* {includedFields.map((item, index) => (
+                  {includedFields.map((item, index) => (
                     <div className="flex gap-2" key={item.id}>
                       <FormField
                         control={form.control}
@@ -436,7 +500,7 @@ console.log("image", images);
                         <Trash2 />
                       </Button>
                     </div>
-                  ))} */}
+                  ))}
                 </div>
               </div>
 
@@ -447,14 +511,14 @@ console.log("image", images);
                     type="button"
                     variant="outline"
                     size="icon"
-                  // onClick={() => appendExcluded({ value: "" })}
+                    onClick={() => appendExcluded({ value: "" })}
                   >
                     <Plus />
                   </Button>
                 </div>
 
                 <div className="space-y-4 mt-4">
-                  {/* {excludedFields.map((item, index) => (
+                  {excludedFields.map((item, index) => (
                     <div className="flex gap-2" key={item.id}>
                       <FormField
                         control={form.control}
@@ -478,7 +542,7 @@ console.log("image", images);
                         <Trash2 />
                       </Button>
                     </div>
-                  ))} */}
+                  ))}
                 </div>
               </div>
 
@@ -489,14 +553,14 @@ console.log("image", images);
                     type="button"
                     variant="outline"
                     size="icon"
-                  // onClick={() => appendAmenities({ value: "" })}
+                    onClick={() => appendAmenities({ value: "" })}
                   >
                     <Plus />
                   </Button>
                 </div>
 
                 <div className="space-y-4 mt-4">
-                  {/* {amenitiesFields.map((item, index) => (
+                  {amenitiesFields.map((item, index) => (
                     <div className="flex gap-2" key={item.id}>
                       <FormField
                         control={form.control}
@@ -520,7 +584,7 @@ console.log("image", images);
                         <Trash2 />
                       </Button>
                     </div>
-                  ))} */}
+                  ))}
                 </div>
               </div>
 
@@ -531,14 +595,14 @@ console.log("image", images);
                     type="button"
                     variant="outline"
                     size="icon"
-                  // onClick={() => appendTourPlan({ value: "" })}
+                    onClick={() => appendTourPlan({ value: "" })}
                   >
                     <Plus />
                   </Button>
                 </div>
 
                 <div className="space-y-4 mt-4">
-                  {/* {tourPlanFields.map((item, index) => (
+                  {tourPlanFields.map((item, index) => (
                     <div className="flex gap-2" key={item.id}>
                       <FormField
                         control={form.control}
@@ -562,7 +626,7 @@ console.log("image", images);
                         <Trash2 />
                       </Button>
                     </div>
-                  ))} */}
+                  ))}
                 </div>
               </div>
             </form>
