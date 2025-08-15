@@ -10,6 +10,8 @@ import { useLoginMutation } from "@/redux/features/auth/auth.api"
 import { toast } from "sonner"
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form"
 import { Input } from "@/components/ui/input"
+import config from "@/config"
+
 
 export function LoginForm({
   className,
@@ -23,13 +25,16 @@ export function LoginForm({
     try {
       const res = await login(data).unwrap()
       console.log(res)
-      if(res.success){
+      if (res.success) {
         toast.success("User login successfully")
         navigate("/")
       }
     } catch (err) {
       console.log(err)
-      if (err.data.message === "User is not verified" ){
+      if (err.data.message === "Password does not match") {
+        toast.error("Invalid credential")
+      }
+      if (err.data.message === "User is not verified") {
         toast.error("Your account is not verified yet")
         navigate("/verify", { state: data.email })
       }
@@ -45,7 +50,7 @@ export function LoginForm({
       </div>
       <div className="grid gap-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
 
             <FormField
               control={form.control}
@@ -87,9 +92,9 @@ export function LoginForm({
             Or continue with
           </span>
         </div>
-        <Button variant="outline" className="w-full">
+        <Button variant="outline" onClick={() => window.open(`${config.baseUrl}/auth/google`)} className="w-full">
 
-          Login with GitHub
+          Login with Google
         </Button>
       </div>
       <div className="text-center text-sm">
