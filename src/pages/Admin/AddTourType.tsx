@@ -44,7 +44,7 @@ export default function AddTourType() {
           <TableBody>
             {
               data?.map((item: { _id:string; name: string }) => (
-                <TableRow>
+                <TableRow key={item._id}>
                   <TableCell className="font-medium w-full">{item?.name}</TableCell>
                   <TableCell className="font-medium">
                     <DeleteConfirmation onConfirm={() => handleRemoveTourType(item?._id)}>

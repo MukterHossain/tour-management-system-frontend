@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import type { FileMetadata } from "@/hooks/use-file-upload";
 import { cn } from "@/lib/utils";
-import { useGetDivisionQuery } from "@/redux/features/division/division.api";
+import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
 import { useAddTourMutation, useGetTourTypesQuery } from "@/redux/features/Tour/tour.api";
 import type { IErrorResponse } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,7 +39,7 @@ const formSchema = z.object({
   tourType: z.string().min(1, "Tour type is required"),
 });
 export default function AddTour() {
-  const { data: divisionData, isLoading: divisionLoading } = useGetDivisionQuery(undefined)
+  const { data: divisionData, isLoading: divisionLoading } = useGetDivisionsQuery(undefined)
   const [images, setImages] = useState<(File | FileMetadata)[] | []>([])
   const { data: tourTypeData } = useGetTourTypesQuery(undefined)
   const [addTour] = useAddTourMutation();
@@ -56,8 +56,8 @@ export default function AddTour() {
     label: tourType.name
   })
   )
-  console.log("divisionData", divisionData)
-  console.log("tourTypeData", tourTypeData)
+  // console.log("divisionData", divisionData)
+  // console.log("tourTypeData", tourTypeData)
 
 
 
@@ -133,7 +133,7 @@ export default function AddTour() {
     control: form.control,
     name: "tourPlan",
   });
-  console.log("includedFields", includedFields)
+  // console.log("includedFields", includedFields)
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     const toastId = toast.loading("Creating tour....");
