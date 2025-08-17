@@ -51,7 +51,7 @@ export default function AddTour() {
   })
   )
   // console.log("divisionOptions", divisionOptions)
-  const tourTypeOptions = tourTypeData?.map((tourType: { _id: string; name: string }) => ({
+  const tourTypeOptions = tourTypeData?.data?.map((tourType: { _id: string; name: string }) => ({
     value: tourType._id,
     label: tourType.name
   })
